@@ -1,4 +1,4 @@
-"""
+"""===================================================================
 crossword.py
 Crossword Puzzle Generator
 Author: Madison Taylor
@@ -13,52 +13,69 @@ Description:
 
 import random
 
-
-
 # ------------------------------------------
 # FUNCTION DEFINITIONS
 # ------------------------------------------
 
-def load_words(wordlist.txt):
+''' Load words and clues from a text file - store as list of tuples (word, clue)'''
+def load_words(wordlist):
     word_clues=[]
-    with open(wordlist.txt,"r") as file:
+    with open(wordlist,"r") as file:
         for line in file:
             parts=line.strip().split(":")
             if len(parts)==2 and len(parts[0])==5:
                 word_clues.append((parts[0].upper(),parts[1]))
     return word_clues #print for testing
 
-def generate_crossword(word_list):
+''' Generate a 5x5 crossword solution grid and returns it with associated clues'''
+def generate_crossword(word_clues):
 
-def place_word(grid,word,row_index):
+    #Very basic random selection of 5 words from the list - to be improved later
 
-def fits_grid(grid,word,row_index):
+    selected_words = random.sample(word_clues,5)
 
-def remove_word(grid,row_index):
+    solution = [list(word[0]) for word in selected_words]
 
-def print_grid(grid):
+    clues = [word[1] for word in selected_words]
 
-def init_player_grid():
-    return [['_']*5 for _ in range(5)]
+    return solution, clues
 
-def print_player_grid(grid):
+#def place_word(grid,word,row_index):
 
-def play_crossword(solution):
+#def fits_grid(grid,word,row_index):
+
+#def remove_word(grid,row_index):
+
+#def print_grid(grid):
+
+#def init_player_grid():
+   # return [['_']*5 for _ in range(5)]
+
+#def print_player_grid(grid):
+
+#def play_crossword(solution):
 
 # ------------------------------------------
 # MAIN CODE
 # ------------------------------------------
 
-def main():
+#def main():
 
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+    #main()
 
 ## Greeting
 
-print("Hello! This is the start of my crossword project.")
+#print("Hello! This is the start of my crossword project.")
 
 ## Generate Crossword
 
+#words = load_words("wordlist.txt")
+#print(words)
+
+
 words = load_words("wordlist.txt")
-print(words)
+
+solution, clues = generate_crossword(words)
+
+print(solution)

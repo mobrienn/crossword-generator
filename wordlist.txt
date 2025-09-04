@@ -1,1 +1,8 @@
 APPLE:one a day keeps the doctor away
+TABLE:1
+CHAIR:2
+HEART:3
+SMILE:4
+FAIRY:5
+THERE:6
+PLAID:7
