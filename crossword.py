@@ -4,7 +4,7 @@ Crossword Puzzle Generator
 Author: Madison Taylor
 Date: September 2025
 
-Description:
+Description: 
 
 ==================================================================="""
 # ------------------------------------------
@@ -27,6 +27,14 @@ def load_words(wordlist):
                 word_clues.append((parts[0].upper(),parts[1]))
     return word_clues #print for testing
 
+def build_prefix_dict(words):
+    prefix_dict = {}
+    for word in words:
+        for i in range(1,6):
+            prefix = word[:i]
+            prefix_dict.setdefault(prefix,[]).append(word)
+    return prefix_dict
+
 ''' Generate a 5x5 crossword solution grid and returns it with associated clues'''
 def generate_crossword(word_clues):
 
@@ -48,8 +56,11 @@ def generate_crossword(word_clues):
 
 #def print_grid(grid):
 
-#def init_player_grid():
-   # return [['_']*5 for _ in range(5)]
+'''Generate a 5x5 player grid initialized with underscores'''
+def init_player_grid():
+    return [['_']*5 for _ in range(5)]
+
+#def update_player_grid(grid,solution,row_index):
 
 #def print_player_grid(grid):
 
@@ -70,12 +81,16 @@ def generate_crossword(word_clues):
 
 ## Generate Crossword
 
-#words = load_words("wordlist.txt")
-#print(words)
 
+words = load_words("test_word_list.txt")
 
-words = load_words("wordlist.txt")
+print(len(words))
+print(words[:40])
+
+valid_word_set = set(word for word, clue in words)
+
+prefix_dict = build_prefix_dict(valid_word_set)
+
+print(len(prefix_dict))
 
 solution, clues = generate_crossword(words)
-
-print(solution)
