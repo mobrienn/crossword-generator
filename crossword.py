@@ -17,56 +17,8 @@ import copy
 GRID_SIZE = 5
 
 # ------------------------------------------
-# FUNCTION DEFINITIONS
+# DATA FUNCTIONS
 # ------------------------------------------
-
-# WELCOME SCREEN ------
-def welcome_screen():
-    print("======================================")
-    print("         Welcome to Crossword        ")
-    print("======================================")
-    print("Type 'yes' to start or 'quit' to exit.\n")
-
-    choice = input ("Do you want to play?    ").strip().lower()
-    return choice == "yes"
-
-# START GAME ------
-def start_game():
-
-    # Load words and build dictionaries
-    word_clues = load_words("test_word_list.txt") # link file with format   words:clues
-    clue_dict = dict(word_clues)
-    words = list(clue_dict.keys())
-    prefix_dict = build_prefix_dict(words)
-
-    print("\nGenerating your crossword puzzle...\n")
-    solution = generate_crossword(words,prefix_dict) 
-    if not solution:
-        print("No solution can be generated. Try again later.")
-        return
-    else:
-        row_clues, column_clues = generate_clue_list(solution,clue_dict)
-
-
-    play_crossword(solution,row_clues,column_clues)
-
-# GENERATE CROSSWORD ------
-def generate_crossword(words, prefix_dict):
-    '''
-        
-    '''
-    grid = [['']*GRID_SIZE for _ in range(GRID_SIZE)] 
-    slots = [
-        (0,0,True,"1-Across"),(0,0,False,"1-Down"),
-        (1,0,True,"2-Across"),(1,1,False,"2-Down"),
-        (2,1,True,"3-Across"),(2,2,False,"3-Down"),
-        (3,2,True,"4-Across"),(3,3,False,"4-Down"),
-        (4,3,True,"5-Across"),(4,4,False,"5-Down")
-        ]
-
-    solution = fill_slot(grid,words,slots,prefix_dict,0)
-    
-    return solution
 
 # LOAD WORDS ------
 def load_words(wordlist):
@@ -96,14 +48,13 @@ def build_prefix_dict(words):
             prefix_dict.setdefault(prefix,[]).append(word)
     return prefix_dict
 
-# CLUE LOOKUP ------
-def clue_lookup(word, clue_dict):
-    '''
-        Return the clue associated with a word.
-    '''
-    if word in clue_dict:
-        return clue_dict[word]
-    return "No clue found"
+# GET CROSSWORD DATA ------
+def get_crossword_data(wordlist="word_list_with_clues.txt"):
+    word_clues = load_words(wordlist)
+    clue_dict = dict(word_clues)
+    words = list(clue_dict.keys())
+    prefix_dict = build_prefix_dict(words)
+    return words, clue_dict, prefix_dict
 
 # GENERATE CLUE LIST ------
 def generate_clue_list(grid,clue_dict):
@@ -124,6 +75,28 @@ def generate_clue_list(grid,clue_dict):
     
     return row_clues, column_clues
 
+# ------------------------------------------
+# CROSS WORD GENERATION FUNCTIONS
+# ------------------------------------------
+
+# GENERATE CROSSWORD ------
+def generate_crossword(words, prefix_dict):
+    '''
+        
+    '''
+    grid = [['']*GRID_SIZE for _ in range(GRID_SIZE)] 
+    slots = [
+        (0,0,True,"1-Across"),(0,0,False,"1-Down"),
+        (1,0,True,"2-Across"),(1,1,False,"2-Down"),
+        (2,1,True,"3-Across"),(2,2,False,"3-Down"),
+        (3,2,True,"4-Across"),(3,3,False,"4-Down"),
+        (4,3,True,"5-Across"),(4,4,False,"5-Down")
+        ]
+
+    solution = fill_slot(grid,words,slots,prefix_dict,0)
+    
+    return solution
+
 # POSSIBLE WORDS ------
 def possible_words(grid, prefix_dict, row_idx, column_idx, is_row=True):
     '''
@@ -143,7 +116,7 @@ def possible_words(grid, prefix_dict, row_idx, column_idx, is_row=True):
     shuffled = words_list[:]
     random.shuffle(shuffled)
     return shuffled
-    
+
 # CHECK PREFIXES ------
 def check_prefixes(grid, prefix_dict):
     '''
@@ -213,20 +186,9 @@ def fill_slot(grid,words,slots,prefix_dict,slot_idx=0):
                 return solution 
     return None
 
-# PLAY CROSSWORD ------
-def play_crossword(solution, row_clues,column_clues):
-    '''
-        
-    '''
-    print("\nHere's your crossword!\n\n")
-    player_grid = [['_']*5 for _ in range(GRID_SIZE)]
-    print_grid(player_grid)
-    print("Across:")
-    for clue in row_clues:
-        print(f"{clue[0]}. {clue[2]}")
-    print("Down")
-    for clue in column_clues:
-        print(f"{clue[0]}. {clue[2]}")
+# ------------------------------------------
+# DISPLAY FUNCTIONS
+# ------------------------------------------
 
 # PRINT GRID ------
 def print_grid(grid):
@@ -251,7 +213,67 @@ def print_grid(grid):
     # Print bottom border
     print("   " + "└" + "───┴"* (size-1) + "───┘")
 
-# 
+# ------------------------------------------
+# WELCOME & PLAY GAME
+# ------------------------------------------
+
+# WELCOME SCREEN ------
+def welcome_screen():
+    print("======================================")
+    print("         Welcome to Crossword        ")
+    print("======================================")
+    print("Type 'yes' to start or 'quit' to exit.\n")
+
+    choice = input ("Do you want to play?    ").strip().lower()
+    return choice == "yes"
+
+# START GAME ------
+def start_game():
+
+    # Load words and build dictionaries
+    word_clues = load_words("word_list_with_clues.txt") # link file with format   words:clues
+    clue_dict = dict(word_clues)
+    words = list(clue_dict.keys())
+    prefix_dict = build_prefix_dict(words)
+
+    print("\nGenerating your crossword puzzle...\n")
+    solution = generate_crossword(words,prefix_dict) 
+    if not solution:
+        print("No solution can be generated. Try again later.")
+        return
+    else:
+        row_clues, column_clues = generate_clue_list(solution,clue_dict)
+
+
+    play_crossword(solution,row_clues,column_clues)
+
+# PLAY CROSSWORD ------
+def play_crossword(solution, row_clues,column_clues):
+    '''
+        
+    '''
+    print("\nHere's your crossword!\n\n")
+    player_grid = [['_']*5 for _ in range(GRID_SIZE)]
+    print_grid(player_grid)
+    print("Across:")
+    for clue in row_clues:
+        print(f"{clue[0]}. {clue[2]}")
+    print("Down")
+    for clue in column_clues:
+        print(f"{clue[0]}. {clue[2]}")
+
+# ------------------------------------------
+#  
+# ------------------------------------------
+
+# CLUE LOOKUP ------
+def clue_lookup(word, clue_dict):
+    '''
+        Return the clue associated with a word.
+    '''
+    if word in clue_dict:
+        return clue_dict[word]
+    return "No clue found"
 
 ############################################         
 # ------------------------------------------
