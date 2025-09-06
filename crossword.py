@@ -20,6 +20,54 @@ GRID_SIZE = 5
 # FUNCTION DEFINITIONS
 # ------------------------------------------
 
+# WELCOME SCREEN ------
+def welcome_screen():
+    print("======================================")
+    print("         Welcome to Crossword        ")
+    print("======================================")
+    print("Type 'yes' to start or 'quit' to exit.\n")
+
+    choice = input ("Do you want to play?    ").strip().lower()
+    return choice == "yes"
+
+# START GAME ------
+def start_game():
+
+    # Load words and build dictionaries
+    word_clues = load_words("test_word_list.txt") # link file with format   words:clues
+    clue_dict = dict(word_clues)
+    words = list(clue_dict.keys())
+    prefix_dict = build_prefix_dict(words)
+
+    print("\nGenerating your crossword puzzle...\n")
+    solution = generate_crossword(words,prefix_dict) 
+    if not solution:
+        print("No solution can be generated. Try again later.")
+        return
+    else:
+        row_clues, column_clues = generate_clue_list(solution,clue_dict)
+
+
+    play_crossword(solution,row_clues,column_clues)
+
+# GENERATE CROSSWORD ------
+def generate_crossword(words, prefix_dict):
+    '''
+        
+    '''
+    grid = [['']*GRID_SIZE for _ in range(GRID_SIZE)] 
+    slots = [
+        (0,0,True,"1-Across"),(0,0,False,"1-Down"),
+        (1,0,True,"2-Across"),(1,1,False,"2-Down"),
+        (2,1,True,"3-Across"),(2,2,False,"3-Down"),
+        (3,2,True,"4-Across"),(3,3,False,"4-Down"),
+        (4,3,True,"5-Across"),(4,4,False,"5-Down")
+        ]
+
+    solution = fill_slot(grid,words,slots,prefix_dict,0)
+    
+    return solution
+
 # LOAD WORDS ------
 def load_words(wordlist):
     '''
@@ -56,6 +104,25 @@ def clue_lookup(word, clue_dict):
     if word in clue_dict:
         return clue_dict[word]
     return "No clue found"
+
+# GENERATE CLUE LIST ------
+def generate_clue_list(grid,clue_dict):
+    '''
+
+    '''
+    row_clues = []
+    column_clues = []
+    for r in range(GRID_SIZE):
+        word = ''.join(letter for letter in grid[r] if letter.strip())
+        clue = clue_dict.get(word,"No clue found")
+        row_clues.append((r+1,"Across",clue,word))
+
+    for c in range(GRID_SIZE):
+        word = ''.join(grid[r][c]for r in range(GRID_SIZE))
+        clue = clue_dict.get(word,"No clue found")
+        column_clues.append((c+1,"Down",clue,word))
+    
+    return row_clues, column_clues
 
 # POSSIBLE WORDS ------
 def possible_words(grid, prefix_dict, row_idx, column_idx, is_row=True):
@@ -120,9 +187,9 @@ def place_word(grid,row_idx,column_idx,prefix_dict,word,is_row=True):
     return None
 
 # FILL SLOTS ------
-def fill_slot(grid,words,slots,slot_idx=0):
+def fill_slot(grid,words,slots,prefix_dict,slot_idx=0):
     '''
-        Recursively attempt to fill corssword slots with valid words.
+        Recursively attempt to fill crossword slots with valid words.
     '''
     if slot_idx >= len(slots):
         return grid
@@ -131,8 +198,9 @@ def fill_slot(grid,words,slots,slot_idx=0):
 
     if slot_idx == 0:
         first_word = random.choice(words)
-        print("First word:", first_word) ### PRINT
-      
+        for i, letter in enumerate(first_word):
+            grid[row_idx][i] = letter
+        return fill_slot(grid,words,slots,prefix_dict,slot_idx+1)
     possible = possible_words(grid,prefix_dict,row_idx,column_idx,is_row)
     for word in possible:
         temp_grid = copy.deepcopy(grid)
@@ -140,53 +208,60 @@ def fill_slot(grid,words,slots,slot_idx=0):
         if temp_grid is None:
                 continue 
         if check_prefixes(temp_grid,prefix_dict):
-            solution = fill_slot(temp_grid,words,slots,slot_idx+1)
+            solution = fill_slot(temp_grid,words,slots,prefix_dict,slot_idx+1)
             if solution:
                 return solution 
     return None
 
-# GENERATE CROSSWORD ------
-def generate_crossword(words, prefix_dict):
+# PLAY CROSSWORD ------
+def play_crossword(solution, row_clues,column_clues):
     '''
-        Generate 5x5 crossword grid and print the solution.
+        
     '''
-    grid = [['']*GRID_SIZE for _ in range(GRID_SIZE)] 
-    slots = [
-        (0,0,True,"1-Across"),(0,0,False,"1-Down"),
-        (1,0,True,"2-Across"),(1,1,False,"2-Down"),
-        (2,1,True,"3-Across"),(2,2,False,"3-Down"),
-        (3,2,True,"4-Across"),(3,3,False,"4-Down"),
-        (4,3,True,"5-Across"),(4,4,False,"5-Down")
-        ]
+    print("\nHere's your crossword!\n\n")
+    player_grid = [['_']*5 for _ in range(GRID_SIZE)]
+    print_grid(player_grid)
+    print("Across:")
+    for clue in row_clues:
+        print(f"{clue[0]}. {clue[2]}")
+    print("Down")
+    for clue in column_clues:
+        print(f"{clue[0]}. {clue[2]}")
 
-    solution = fill_slot(grid,words,slots)
-    if solution:
-        print("Puzzle generated!")
-        for row in solution:
-                print(row)
+# PRINT GRID ------
+def print_grid(grid):
+    '''
+    
+    '''
+    size = len(grid)
 
-    return solution
+    # Print column numbers with fixed width
+    print("    " + "  ".join(f"{c+1:>2}" for c in range(size)))
 
-# INIT_PLAYER GRID ------
-def init_player_grid():
-    '''Generate a 5x5 player grid initialized with underscores.'''
-    return [['_']*5 for _ in range(GRID_SIZE)]
-            
+    # Print top border
+    print("   " + "┌" + "───┬"* (size-1) + "───┐")
+    
+    for r, row in enumerate(grid):
+        # Print row number with fixed width + row content
+        print(f"{r+1}  │ " + " │ ".join(f"{cell}" for cell in row) + " │")
+        # Print row separator
+        if r < size - 1:
+            print("   " + "├" + "───┼"* (size-1) + "───┤")
+    
+    # Print bottom border
+    print("   " + "└" + "───┴"* (size-1) + "───┘")
+
+# 
+
+############################################         
 # ------------------------------------------
 # MAIN CODE
 # ------------------------------------------
+############################################    
 
 if __name__ == "__main__":
-    word_clues = load_words("test_word_list.txt")
-    clue_dict = dict(word_clues)
-    words = list(clue_dict.keys())
-    prefix_dict = build_prefix_dict(words)
-
-    solution = generate_crossword(words,prefix_dict)
-
-    if check_prefixes(solution,prefix_dict):
-        print("Puzzle generated!)")
-        for row in solution:
-            print(row)
+    # PRINT INTRO HERE ... READY TO PLAY
+    if welcome_screen():
+        start_game()
     else:
-        print("No solution found.")
+        print("Okay, maybe next time!")
