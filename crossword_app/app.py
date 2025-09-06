@@ -15,11 +15,9 @@ def home():
     wordlist_path = os.path.abspath(
         os.path.join(os.path.dirname(__file__), '..', 'word_lists', 'word_list_with_clues.txt')
 )
-    words, clue_dict, prefix_dict = get_crossword_data(wordlist_path)
-
     
     # Get crossword data
-    words, clue_dict, prefix_dict = get_crossword_data(wordlist_path)
+    word_clues, words, clue_dict, prefix_dict = get_crossword_data(wordlist_path)
     solution = generate_crossword(words, prefix_dict)
     
     if not solution:
