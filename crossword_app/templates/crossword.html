@@ -7,54 +7,63 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            padding: 10px;
             margin: 0;
+            padding: 20px;
             background-color: #f4f4f4;
         }
 
         h1 {
             text-align: center;
+            margin-bottom: 20px;
         }
 
         .crossword-container {
             display: flex;
             flex-direction: column;
             align-items: center;
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
         }
 
         table {
             border-collapse: collapse;
-            margin: 10px 0;
+            width: 100%; /* make table stretch */
+            max-width: 100%;
         }
 
         td {
-            width: 40px;
-            height: 40px;
+            border: 1px solid #333;
             text-align: center;
             vertical-align: middle;
-            border: 1px solid #333;
             font-weight: bold;
-            font-size: 18px;
+            font-size: 2vw; /* responsive font */
+            height: 2vw;
+            width: 2vw; /* square cells */
         }
 
-        @media (max-width: 500px) {
+        @media (max-width: 600px) {
             td {
-                width: 30px;
-                height: 30px;
-                font-size: 14px;
+                font-size: 4vw;
+                width: 10vw;
+                height: 10vw;
             }
         }
 
-        .clues {
+        .clues-container {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            width: 100%;
             margin-top: 20px;
-            max-width: 90%;
+        }
+
+        .clues {
+            width: 48%; /* side-by-side */
         }
 
         .clues h2 {
-            margin: 5px 0;
-            font-size: 18px;
+            margin-bottom: 5px;
+            font-size: 1.2em;
         }
 
         .clues ul {
@@ -63,16 +72,17 @@
         }
 
         .clues li {
-            margin: 2px 0;
-            font-size: 16px;
+            margin-bottom: 5px;
         }
 
-        @media (max-width: 500px) {
-            .clues h2 {
-                font-size: 16px;
+        @media (max-width: 600px) {
+            .clues-container {
+                flex-direction: column;
             }
-            .clues li {
-                font-size: 14px;
+
+            .clues {
+                width: 100%;
+                margin-bottom: 15px;
             }
         }
     </style>
@@ -91,12 +101,25 @@
             {% endfor %}
         </table>
 
-        <div class="clues">
-            <h2>Across</h2>
-            <ul>
-                {% for clue in row_clues %}
-                <li>{{ clue[0] }}. {{ clue[2] }}</li>
-                {% endfor %}
-            </ul>
+        <div class="clues-container">
+            <div class="clues">
+                <h2>Across</h2>
+                <ul>
+                    {% for clue in row_clues %}
+                    <li>{{ clue[0] }}. {{ clue[2] }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
 
-            <h2>Down</h2
+            <div class="clues">
+                <h2>Down</h2>
+                <ul>
+                    {% for clue in column_clues %}
+                    <li>{{ clue[0] }}. {{ clue[2] }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
