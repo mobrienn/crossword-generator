@@ -98,9 +98,10 @@ def generate_crossword(words, prefix_dict):
     return solution
 
 # POSSIBLE WORDS ------
-def possible_words(grid, prefix_dict, row_idx, column_idx, is_row=True):
+def possible_words(grid, prefix_dict, row_idx, column_idx, is_row=True, words=None):
     '''
         Returns possible words for a slot based on current grid state and prefixes.
+        If prefix is empty, `words` must be provided (list of all candidate words).
     '''
     if is_row:
         prefix = ''.join(letter for letter in grid[row_idx] if letter.strip())
@@ -109,13 +110,14 @@ def possible_words(grid, prefix_dict, row_idx, column_idx, is_row=True):
         prefix = ''.join(grid[r][column_idx] for r in range(GRID_SIZE) if grid[r][column_idx].strip())
 
     if prefix == '':
-        words_list = list(clue_dict.keys())
+        if words is None:
+            raise ValueError("possible_words() needs `words` when there is no prefix")
+        words_list = words[:]
     else:
         words_list = prefix_dict.get(prefix,[])
 
-    shuffled = words_list[:]
-    random.shuffle(shuffled)
-    return shuffled
+    random.shuffle(words_list)
+    return words_list
 
 # CHECK PREFIXES ------
 def check_prefixes(grid, prefix_dict):
@@ -126,17 +128,13 @@ def check_prefixes(grid, prefix_dict):
     # Check all rows
     for i in range(GRID_SIZE):
         row_prefix = ''.join(letter for letter in grid[i] if letter.strip()) # join all letters in a row
-        if row_prefix not in prefix_dict:
-            if row_prefix == '':
-                return True
+        if row_prefix and row_prefix not in prefix_dict:
             return False
         
     # Check all columns
     for c in range(GRID_SIZE):
         column_prefix = ''.join(grid[r][c] for r in range(5) if grid[r][c].strip()) # join all letters in a column
-        if column_prefix not in prefix_dict:
-            if column_prefix == '':
-                return True
+        if column_prefix and column_prefix not in prefix_dict:
             return False
     
     return True
@@ -174,7 +172,7 @@ def fill_slot(grid,words,slots,prefix_dict,slot_idx=0):
         for i, letter in enumerate(first_word):
             grid[row_idx][i] = letter
         return fill_slot(grid,words,slots,prefix_dict,slot_idx+1)
-    possible = possible_words(grid,prefix_dict,row_idx,column_idx,is_row)
+    possible = possible_words(grid,prefix_dict,row_idx,column_idx,is_row, words)
     for word in possible:
         temp_grid = copy.deepcopy(grid)
         temp_grid = place_word(temp_grid,row_idx,column_idx,prefix_dict,word,is_row)
