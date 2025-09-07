@@ -1,39 +1,102 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crossword Puzzle</title>
     <style>
-        table { border-collapse: collapse; }
-        td { width: 40px; height: 40px; text-align: center; border: 1px solid black; font-size: 20px; }
-        .clues { margin-top: 20px; }
+        body {
+            font-family: Arial, sans-serif;
+            padding: 10px;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .crossword-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+
+        td {
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            vertical-align: middle;
+            border: 1px solid #333;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        @media (max-width: 500px) {
+            td {
+                width: 30px;
+                height: 30px;
+                font-size: 14px;
+            }
+        }
+
+        .clues {
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
+            max-width: 90%;
+        }
+
+        .clues h2 {
+            margin: 5px 0;
+            font-size: 18px;
+        }
+
+        .clues ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .clues li {
+            margin: 2px 0;
+            font-size: 16px;
+        }
+
+        @media (max-width: 500px) {
+            .clues h2 {
+                font-size: 16px;
+            }
+            .clues li {
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <body>
     <h1>Crossword Puzzle</h1>
-    <table>
-        {% for row in grid %}
-        <tr>
-            {% for cell in row %}
-            <td>{{ cell if cell != "" else "_" }}</td>
-            {% endfor %}
-        </tr>
-        {% endfor %}
-    </table>
 
-    <div class="clues">
-        <h2>Across:</h2>
-        <ul>
-            {% for clue in row_clues %}
-            <li>{{ clue[0] }}. {{ clue[2] }}</li>
+    <div class="crossword-container">
+        <table>
+            {% for row in grid %}
+            <tr>
+                {% for cell in row %}
+                <td>{{ cell }}</td>
+                {% endfor %}
+            </tr>
             {% endfor %}
-        </ul>
+        </table>
 
-        <h2>Down:</h2>
-        <ul>
-            {% for clue in column_clues %}
-            <li>{{ clue[0] }}. {{ clue[2] }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-</body>
-</html>
+        <div class="clues">
+            <h2>Across</h2>
+            <ul>
+                {% for clue in row_clues %}
+                <li>{{ clue[0] }}. {{ clue[2] }}</li>
+                {% endfor %}
+            </ul>
+
+            <h2>Down</h2
