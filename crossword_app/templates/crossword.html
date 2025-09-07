@@ -1,125 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crossword Puzzle</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
+{% extends "base.html" %}
+{% block content %}
 
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+<h1>Crossword Puzzle</h1>
 
-        .crossword-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        table {
-            border-collapse: collapse;
-            width: 100%; /* make table stretch */
-            max-width: 100%;
-        }
-
-        td {
-            border: 1px solid #333;
-            text-align: center;
-            vertical-align: middle;
-            font-weight: bold;
-            font-size: 2vw; /* responsive font */
-            height: 2vw;
-            width: 2vw; /* square cells */
-        }
-
-        @media (max-width: 600px) {
-            td {
-                font-size: 4vw;
-                width: 10vw;
-                height: 10vw;
-            }
-        }
-
-        .clues-container {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        .clues {
-            width: 48%; /* side-by-side */
-        }
-
-        .clues h2 {
-            margin-bottom: 5px;
-            font-size: 1.2em;
-        }
-
-        .clues ul {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        .clues li {
-            margin-bottom: 5px;
-        }
-
-        @media (max-width: 600px) {
-            .clues-container {
-                flex-direction: column;
-            }
-
-            .clues {
-                width: 100%;
-                margin-bottom: 15px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <h1>Crossword Puzzle</h1>
-
-    <div class="crossword-container">
-        <table>
-            {% for row in grid %}
-            <tr>
-                {% for cell in row %}
-                <td>{{ cell }}</td>
-                {% endfor %}
-            </tr>
+<div class="crossword-container">
+    <table id="crossword-grid">
+        {% for r, row in enumerate(grid) %}
+        <tr>
+            {% for c, cell in enumerate(row) %}
+            <td data-row="{{ r }}" data-col="{{ c }}" onclick="selectCell(this)">
+                {{ cell }}
+            </td>
             {% endfor %}
-        </table>
+        </tr>
+        {% endfor %}
+    </table>
 
-        <div class="clues-container">
-            <div class="clues">
-                <h2>Across</h2>
-                <ul>
-                    {% for clue in row_clues %}
-                    <li>{{ clue[0] }}. {{ clue[2] }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
+    <div id="clue-container">
+        <strong>Clue:</strong> <span id="current-clue">Click a word to see its clue</span>
+    </div>
 
-            <div class="clues">
-                <h2>Down</h2>
-                <ul>
-                    {% for clue in column_clues %}
-                    <li>{{ clue[0] }}. {{ clue[2] }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
+    <div class="clues-container">
+        <div class="clues">
+            <h2>Across</h2>
+            <ul>
+                {% for clue in row_clues %}
+                <li>{{ clue[0] }}. {{ clue[2] }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="clues">
+            <h2>Down</h2>
+            <ul>
+                {% for clue in column_clues %}
+                <li>{{ clue[0] }}. {{ clue[2] }}</li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
-</body>
-</html>
+
+    <div id="letter-pad">
+        {% for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
+        <button onclick="addLetter('{{ letter }}')">{{ letter }}</button>
+        {% endfor %}
+        <button onclick="deleteLetter()">Delete</button>
+        <button onclick="clearWord()">Clear</button>
+    </div>
+</div>
+
+<script>
+    const rowClues = {{ row_clues | tojson }};
+    const columnClues = {{ column_clues | tojson }};
+</script>
+<script src="{{ url_for('static', filename='crossword.js') }}"></script>
+
+{% endblock %}
+
