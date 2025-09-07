@@ -5,9 +5,6 @@ Date: September 2025
 Description: Generate 5x5 crossword puzzles using a word list and provides clues for each word.
 ==================================================================="""
 
-# ------------------------------------------
-# IMPORTS
-# ------------------------------------------
 import random
 import copy 
 
@@ -76,7 +73,7 @@ def generate_clue_list(grid,clue_dict):
     return row_clues, column_clues
 
 # ------------------------------------------
-# CROSS WORD GENERATION FUNCTIONS
+# CROSSWORD GENERATION FUNCTIONS
 # ------------------------------------------
 
 # GENERATE CROSSWORD ------
@@ -183,92 +180,6 @@ def fill_slot(grid,words,slots,prefix_dict,slot_idx=0):
             if solution:
                 return solution 
     return None
-
-# ------------------------------------------
-# DISPLAY FUNCTIONS
-# ------------------------------------------
-
-# PRINT GRID ------
-def print_grid(grid):
-    '''
-    
-    '''
-    size = len(grid)
-
-    # Print column numbers with fixed width
-    print("    " + "  ".join(f"{c+1:>2}" for c in range(size)))
-
-    # Print top border
-    print("   " + "┌" + "───┬"* (size-1) + "───┐")
-    
-    for r, row in enumerate(grid):
-        # Print row number with fixed width + row content
-        print(f"{r+1}  │ " + " │ ".join(f"{cell}" for cell in row) + " │")
-        # Print row separator
-        if r < size - 1:
-            print("   " + "├" + "───┼"* (size-1) + "───┤")
-    
-    # Print bottom border
-    print("   " + "└" + "───┴"* (size-1) + "───┘")
-
-# ------------------------------------------
-# WELCOME & PLAY GAME
-# ------------------------------------------
-
-# WELCOME SCREEN ------
-def welcome_screen():
-    print("======================================")
-    print("         Welcome to Crossword        ")
-    print("======================================")
-    print("Type 'yes' to start or 'quit' to exit.\n")
-
-    choice = input ("Do you want to play?    ").strip().lower()
-    return choice == "yes"
-
-# START GAME ------
-def start_game():
-
-    # Load words and build dictionaries
-    word_clues, words, clue_dict, prefix_dict = get_crossword_data(wordlist="word_lists/word_list_with_clues.txt")
-    
-    print("\nGenerating your crossword puzzle...\n")
-    solution = generate_crossword(words,prefix_dict) 
-    if not solution:
-        print("No solution can be generated. Try again later.")
-        return
-    else:
-        row_clues, column_clues = generate_clue_list(solution,clue_dict)
-
-
-    play_crossword(solution,row_clues,column_clues)
-
-# PLAY CROSSWORD ------
-def play_crossword(solution, row_clues,column_clues):
-    '''
-        
-    '''
-    print("\nHere's your crossword!\n\n")
-    player_grid = [['_']*5 for _ in range(GRID_SIZE)]
-    print_grid(player_grid)
-    print("Across:")
-    for clue in row_clues:
-        print(f"{clue[0]}. {clue[2]}")
-    print("Down")
-    for clue in column_clues:
-        print(f"{clue[0]}. {clue[2]}")
-
-# ------------------------------------------
-#  
-# ------------------------------------------
-
-# CLUE LOOKUP ------
-def clue_lookup(word, clue_dict):
-    '''
-        Return the clue associated with a word.
-    '''
-    if word in clue_dict:
-        return clue_dict[word]
-    return "No clue found"
 
 ############################################         
 
