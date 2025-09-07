@@ -49,12 +49,12 @@ def build_prefix_dict(words):
     return prefix_dict
 
 # GET CROSSWORD DATA ------
-def get_crossword_data(wordlist="word_list_with_clues.txt"):
+def get_crossword_data(wordlist="word_lists/word_list_with_clues.txt"):
     word_clues = load_words(wordlist)
     clue_dict = dict(word_clues)
     words = list(clue_dict.keys())
     prefix_dict = build_prefix_dict(words)
-    return words, clue_dict, prefix_dict
+    return word_clues, words, clue_dict, prefix_dict
 
 # GENERATE CLUE LIST ------
 def generate_clue_list(grid,clue_dict):
@@ -231,11 +231,8 @@ def welcome_screen():
 def start_game():
 
     # Load words and build dictionaries
-    word_clues = load_words("word_list_with_clues.txt") # link file with format   words:clues
-    clue_dict = dict(word_clues)
-    words = list(clue_dict.keys())
-    prefix_dict = build_prefix_dict(words)
-
+    word_clues, words, clue_dict, prefix_dict = get_crossword_data(wordlist="word_lists/word_list_with_clues.txt")
+    
     print("\nGenerating your crossword puzzle...\n")
     solution = generate_crossword(words,prefix_dict) 
     if not solution:
