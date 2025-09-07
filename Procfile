@@ -1,1 +1,1 @@
-web: gunicorn crossword_app.app:app
+web: gunicorn crossword_app.app:app --timeout 60
