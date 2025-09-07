@@ -271,14 +271,4 @@ def clue_lookup(word, clue_dict):
     return "No clue found"
 
 ############################################         
-# ------------------------------------------
-# MAIN CODE
-# ------------------------------------------
-############################################    
 
-if __name__ == "__main__":
-    # PRINT INTRO HERE ... READY TO PLAY
-    if welcome_screen():
-        start_game()
-    else:
-        print("Okay, maybe next time!")
