@@ -1,6 +1,11 @@
 from flask import Flask, render_template
 import os
-from crossword_app.crossword import generate_crossword, get_crossword_data, GRID_SIZE, generate_clue_list
+try:
+    # Works on Render (treats repo as package)
+    from crossword_app.crossword import generate_crossword, get_crossword_data, GRID_SIZE, generate_clue_list
+except ModuleNotFoundError:
+    # Works locally (inside crossword_app/)
+    from crossword import generate_crossword, get_crossword_data, GRID_SIZE, generate_clue_list
 
 app = Flask(__name__)
 

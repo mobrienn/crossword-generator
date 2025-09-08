@@ -1,5 +1,5 @@
 let selectedCell = null;
-let solution = window.solution || null;  // You can pass the real solution from Flask later
+let clueMode = "row"; // default
 
 // Select a cell when clicked
 function selectCell(cell) {
@@ -9,18 +9,28 @@ function selectCell(cell) {
     selectedCell = cell;
     selectedCell.classList.add("selected");
 
-    // Optional: show clue
-    const row = parseInt(cell.dataset.row);
-    const col = parseInt(cell.dataset.col);
-    let clueText = "";
+    // If clicking the same cell, toggle clue mode
+    if (selectedCell === cell) {
+        clueMode = (clueMode === 'row') ? "column" : "row";
+    } else {
 
-    let clueText = "";
-    if (rowClues[row]) {
-        clueText = `Row ${row + 1}: ${rowClues[row][2]}`;  // [2] is the clue string
-    } else if (columnClues[col]) {
-        clueText = `Column ${col + 1}: ${columnClues[col][2]}`;
+        clueMode = "row";
     }
 
+    selectedCell = cell;
+    selectedCell.classList.add("selected");
+
+    // Get coordinates
+    const row = parseInt(cell.dataset.row);
+    const col = parseInt(cell.dataset.col);
+
+    // Show clue based on clueMode
+    let clueText = "";
+    if (clueMode === "row" && rowClues[row]) {
+        clueText = `Row ${row + 1}: ${rowClues[row][2]}`;  // [2] is the clue string
+    } else if (clueMode === "column" && columnClues[col]) {
+        clueText = `Column ${col + 1}: ${columnClues[col][2]}`;        
+    }
     document.getElementById("current-clue").textContent = clueText;
 }
 
