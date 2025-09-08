@@ -1,6 +1,6 @@
 from flask import Flask, render_template
 import os
-from crossword import generate_crossword, get_crossword_data, GRID_SIZE, generate_clue_list
+from crossword_app.crossword import generate_crossword, get_crossword_data, GRID_SIZE, generate_clue_list
 
 app = Flask(__name__)
 
