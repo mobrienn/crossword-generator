@@ -97,7 +97,7 @@
 
         <!-- Dynamic clue display -->
         <div id="clue-container">
-            <strong>Clue:</strong> <span id="current-clue">Click a word to see its clue</span>
+            <strong>Clue:</strong> <span id="current-clue">''</span>
         </div>
 
         <!-- Virtual keyboard -->
@@ -144,10 +144,9 @@
 
     <!-- Pass clues to JS -->
     <script>
-        const rowClues = {{ row_clues | tojson | safe }};
-        const columnClues = {{ column_clues | tojson | safe }};
-        const size = {{ size }};
-        
+        const rowClues = [/* array of clues */];
+        const columnClues = [/* array of clues */];
+        const size = 10;
     </script>
 
     <!-- JS file -->
