@@ -15,10 +15,8 @@ body {
 
 #crossword-grid {
     border-collapse: collapse;
-    width: 100%;
-    max-width: 500px; /* keeps squares readable */
+    margin: 20px auto;
 }
-
 #crossword-grid td {
     width: 50px;
     height: 50px;
@@ -26,8 +24,7 @@ body {
     vertical-align: middle;
     border: 1px solid #333;
     font-weight: bold;
-    font-size: 18px;
-    cursor: pointer;
+    font-size: 20px;
 }
 
 #crossword-grid td.selected {
@@ -55,19 +52,35 @@ body {
 }
 
 #letter-pad {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7 buttons per row */
+    gap: 5px;
+    justify-items: center;
 }
 
 #letter-pad button {
-    margin: 2px;
-    width: 40px;
-    height: 40px;
-    font-weight: bold;
+    width: 100%;
+    height: 45px;
+    font-size: 16px;
     cursor: pointer;
 }
+
+#letter-pad button.special {
+    grid-column: span 2;   /* make wider */
+    height: 45px;
+    font-size: 16px;
+    padding: 0 10px;       /* add a little breathing room */
+    white-space: nowrap;   /* prevent wrapping onto 2 lines */
+}
+
+#letter-pad .spacer {
+    grid-column: span 1; /* Creates QWERTY staggering */
+}
+
+#letter-pad .spacer.wide {
+    grid-column: span 2; /* Bigger spacer for bottom row */
+}
+
 
 @media (max-width: 600px) {
     #letter-pad button {
@@ -75,4 +88,19 @@ body {
         height: 30px;
         font-size: 14px;
     }
+}
+
+#crossword-grid td {
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid #333;
+    font-weight: bold;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+#crossword-grid td.selected {
+    background-color: #d0f0ff;
 }

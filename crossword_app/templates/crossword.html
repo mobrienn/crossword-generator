@@ -1,58 +1,156 @@
-{% extends "base.html" %}
-{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crossword Puzzle</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 10px;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
 
-<h1>Crossword Puzzle</h1>
+        h1 {
+            text-align: center;
+        }
 
-<div class="crossword-container">
+        .crossword-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+
+        td {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            vertical-align: middle;
+            border: 1px solid #333;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        td.selected {
+            background-color: #cce5ff;
+        }
+
+        #clue-container {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+
+        #letter-pad {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        #letter-pad button {
+            width: 40px;
+            height: 40px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 500px) {
+            td {
+                width: 35px;
+                height: 35px;
+                font-size: 14px;
+            }
+            #letter-pad button {
+                width: 30px;
+                height: 30px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Crossword Puzzle</h1>
+
+    <div class="crossword-container">
+        <!-- Crossword Grid -->
     <table id="crossword-grid">
-        {% for r, row in enumerate(grid) %}
+        {% for row_idx in range(grid|length) %}
         <tr>
-            {% for c, cell in enumerate(row) %}
-            <td data-row="{{ r }}" data-col="{{ c }}" onclick="selectCell(this)">
-                {{ cell }}
+            {% for col_idx in range(grid[row_idx]|length) %}
+            <td onclick="selectCell(this)" data-row="{{ row_idx }}" data-col="{{ col_idx }}" onclick="selectCell(this)">
+                {{ grid[row_idx][col_idx] }}
             </td>
             {% endfor %}
         </tr>
         {% endfor %}
     </table>
 
-    <div id="clue-container">
-        <strong>Clue:</strong> <span id="current-clue">Click a word to see its clue</span>
-    </div>
 
-    <div class="clues-container">
-        <div class="clues">
-            <h2>Across</h2>
-            <ul>
-                {% for clue in row_clues %}
-                <li>{{ clue[0] }}. {{ clue[2] }}</li>
-                {% endfor %}
-            </ul>
+
+        <!-- Dynamic clue display -->
+        <div id="clue-container">
+            <strong>Clue:</strong> <span id="current-clue">Click a word to see its clue</span>
         </div>
-        <div class="clues">
-            <h2>Down</h2>
-            <ul>
-                {% for clue in column_clues %}
-                <li>{{ clue[0] }}. {{ clue[2] }}</li>
-                {% endfor %}
-            </ul>
+
+        <!-- Virtual keyboard -->
+        <div id="letter-pad">
+           
+            <!-- Row 1 -->
+            <button onclick="addLetter('Q')">Q</button>
+            <button onclick="addLetter('W')">W</button>
+            <button onclick="addLetter('E')">E</button>
+            <button onclick="addLetter('R')">R</button>
+            <button onclick="addLetter('T')">T</button>
+            <button onclick="addLetter('Y')">Y</button>
+            <button onclick="addLetter('U')">U</button>
+            <button onclick="addLetter('I')">I</button>
+            <button onclick="addLetter('O')">O</button>
+            <button onclick="addLetter('P')">P</button>
+
+            <!-- Row 2 -->
+            <div class="spacer"></div>
+            <button onclick="addLetter('A')">A</button>
+            <button onclick="addLetter('S')">S</button>
+            <button onclick="addLetter('D')">D</button>
+            <button onclick="addLetter('F')">F</button>
+            <button onclick="addLetter('G')">G</button>
+            <button onclick="addLetter('H')">H</button>
+            <button onclick="addLetter('J')">J</button>
+            <button onclick="addLetter('K')">K</button>
+            <button onclick="addLetter('L')">L</button>
+
+            <!-- Row 3 -->
+            <div class="spacer wide"></div>
+            <button onclick="addLetter('Z')">Z</button>
+            <button onclick="addLetter('X')">X</button>
+            <button onclick="addLetter('C')">C</button>
+            <button onclick="addLetter('V')">V</button>
+            <button onclick="addLetter('B')">B</button>
+            <button onclick="addLetter('N')">N</button>
+            <button onclick="addLetter('M')">M</button>
+            <button class="special" onclick="deleteLetter()">Delete</button>
+            <button class="special" onclick="clearCell()">Clear</button>
         </div>
+
     </div>
 
-    <div id="letter-pad">
-        {% for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
-        <button onclick="addLetter('{{ letter }}')">{{ letter }}</button>
-        {% endfor %}
-        <button onclick="deleteLetter()">Delete</button>
-        <button onclick="clearWord()">Clear</button>
-    </div>
-</div>
+    <!-- Pass clues to JS -->
+    <script>
+        const rowClues = {{ row_clues | tojson | safe }};
+        const columnClues = {{ column_clues | tojson | safe }};
+        const size = {{ size }};
+        
+    </script>
 
-<script>
-    const rowClues = {{ row_clues | tojson }};
-    const columnClues = {{ column_clues | tojson }};
-</script>
-<script src="{{ url_for('static', filename='crossword.js') }}"></script>
-
-{% endblock %}
-
+    <!-- JS file -->
+    <script src="{{ url_for('static', filename='crossword.js') }}"></script>
+</body>
+</html>
