@@ -14,13 +14,13 @@ function selectCell(cell) {
     const col = parseInt(cell.dataset.col);
     let clueText = "";
 
+    let clueText = "";
     if (rowClues[row]) {
-        clueText = `Row ${row + 1}: ${rowClues[row]}`;
+        clueText = `Row ${row + 1}: ${rowClues[row][2]}`;  // [2] is the clue string
     } else if (columnClues[col]) {
-        clueText = `Column ${col + 1}: ${columnClues[col]}`;
-    } else {
-        clueText = "No clue for this cell.";
+        clueText = `Column ${col + 1}: ${columnClues[col][2]}`;
     }
+
     document.getElementById("current-clue").textContent = clueText;
 }
 

@@ -14,3 +14,11 @@ A simple Flask web app serves the puzzles in the browser, letting users fill in 
 - Save/load puzzles  
 - Add scoring or timer  
 - Mobile-friendly interface
+
+
+#### 
+crossword.py        -> puzzle logic (data)
+app.py              -> server logic (Flask routes)
+crossword.html      -> structure/layout
+crossword.js        -> user interaction
+crossword.css       -> styling

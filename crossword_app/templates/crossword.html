@@ -144,10 +144,11 @@
 
     <!-- Pass clues to JS -->
     <script>
-        const rowClues = [/* array of clues */];
-        const columnClues = [/* array of clues */];
-        const size = 10;
+        const solution = {{ solution|tojson }};
+        const rowClues = {{ row_clues|tojson }};
+        const columnClues = {{ column_clues|tojson }};
     </script>
+
 
     <!-- JS file -->
     <script src="{{ url_for('static', filename='crossword.js') }}"></script>
